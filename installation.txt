@@ -1,0 +1,29 @@
+1.for installing virtual environment, select command prompt type "py -3 -m venv <name>"
+
+2.changing intepreter from global to virtual environment (so that all the packages will be specific to the venv)
+go to view > command palette > python select intepreter > type -> " .\venv\Script\python.exe
+
+3.Terminal using virtual environment  -> we need to add path to activate.bat file
+    open terminal(command prompt) -> type -> "venv\Scripts\activate.bat"
+
+4. Installing FastAPI -> type -> "pip install fastapi[all]
+
+5. "pip freeze" -> show all the packages install
+
+6. Running live server "uvicorn main:app --reload"
+
+7. For opening built-in Documentation powered by Swagger-UI 
+	
+	"http://127.0.0.1:8000/docs" & "http://127.0.0.1:8000/redoc"
+
+8. For making a python packages create folder of any names (here its "app") and add a file name "__init__.py" 
+    this will ensure that the given folder is a python package. Now you need to change the directory for web server .
+    In terminal type "uvicorn app.main:app --reload"
+
+9. If sometime uvicorn server not run and giving error then try to activate Virtual Environment by adding path 
+    of python folder and python/scripts file to the environment variable. 
+    Also try to run command " venv\Scripts\activate " in command prompt.
+
+10. For hashing the password we have to install " pip install passlib[bcrypt] "
+
+11. To generate and verify the JWT tokens in Python install " pip install python-jose[cryptography] "
