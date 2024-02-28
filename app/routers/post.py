@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Response, status, HTTPException, Depends, APIRouter
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Optional
 from .. import models, schemas, oauth2
 from ..database import get_db
 
@@ -21,8 +21,8 @@ router = APIRouter(
 
 # 2. With sqlalchemy without using sql queries 
 @router.get("/", response_model=List[schemas.Post])
-def get_posts(db: Session = Depends(get_db), current_user: str = Depends(oauth2.get_current_user)):   #every time we need to pass parameter to work with the database
-    posts = db.query(models.Post).all() # this is used for sending queries to db without using actual SQL Queries command
+def get_posts(db: Session = Depends(get_db), current_user: str = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0, search: Optional[str] = ""):   #every time we need to pass parameter to work with the database
+    posts = db.query(models.Post).filter(models.Post.title.contains(search)).limit(limit).offset(skip).all() # this is used for sending queries to db without using actual SQL Queries command
     return posts
 
 ########################################## GET SINGLE POSTS #############################################
