@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Response, status, HTTPException, Depends, APIRouter
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from .. import models, schemas, oauth2
@@ -20,9 +21,12 @@ router = APIRouter(
 #     return {"data": posts}
 
 # 2. With sqlalchemy without using sql queries 
-@router.get("/", response_model=List[schemas.Post])
+# @router.get("/", response_model=List[schemas.Post])
+@router.get("/", response_model=List[schemas.PostOut])
 def get_posts(db: Session = Depends(get_db), current_user: str = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0, search: Optional[str] = ""):   #every time we need to pass parameter to work with the database
-    posts = db.query(models.Post).filter(models.Post.title.contains(search)).limit(limit).offset(skip).all() # this is used for sending queries to db without using actual SQL Queries command
+    # posts = db.query(models.Post).filter(models.Post.title.contains(search)).limit(limit).offset(skip).all() # this is used for sending queries to db without using actual SQL Queries command
+    # Joining votes and posts table using sqlalchemy
+    posts = db.query(models.Post, func.count(models.Vote.post_id).label("votes")).join(models.Vote, models.Vote.post_id == models.Post.id, isouter=True).group_by(models.Post.id).filter(models.Post.title.contains(search)).limit(limit).offset(skip).all()
     return posts
 
 ########################################## GET SINGLE POSTS #############################################
