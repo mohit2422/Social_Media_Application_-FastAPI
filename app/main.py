@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from . import models
 from .database import engine
 from .routers import post,user,auth,vote
@@ -7,6 +8,16 @@ from .routers import post,user,auth,vote
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
         
  # it will grab router object from post & user file and imports all this specific routes
 app.include_router(post.router)
@@ -14,10 +25,10 @@ app.include_router(user.router)
 app.include_router(auth.router)
 app.include_router(vote.router)
 
-#                                                 # @ is decorator that reference fastapi instance name app
-# @app.get("/")                                   #app is instnace, get is http method and / is path (root url in this case)
-# def root():                                     #root is function
-#     return {"message": "Welcome to my API !!!"}
+                                                # @ is decorator that reference fastapi instance name app
+@app.get("/")                                   #app is instnace, get is http method and / is path (root url in this case)
+def root():                                     #root is function
+    return {"message": "Welcome to my API !!!"}
 
 
 
